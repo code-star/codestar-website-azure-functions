@@ -6,7 +6,7 @@ const { TWITTER_ACCESS_TOKEN, TWITTER_USER_NAME } = process.env;
 const TWITTER_API_USERS_URL = "https://api.twitter.com/2/users/by/username/";
 
 const getTwitterApiTweetsUrl = (userId: string, count: number) =>
-  `https://api.twitter.com/2/users/${userId}/tweets?max_results=${count}`;
+  `https://api.twitter.com/2/users/${userId}/tweets?max_results=${count}&expansions=author_id&tweet.fields=created_at,author_id&user.fields=profile_image_url`;
 
 const getUserId = async (): Promise<string | null> => {
   try {
@@ -38,17 +38,20 @@ const httpTrigger: AzureFunction = async function (
     if (!userId) {
       throw Error(`no user id found for ${TWITTER_USER_NAME}`);
     }
-    const tweets = await got<{ data: { id: string; text: string }[] }>(
-      getTwitterApiTweetsUrl(userId, count),
-      {
-        responseType: "json",
-        headers: {
-          Authorization: `Bearer ${TWITTER_ACCESS_TOKEN}`,
-        },
-      }
-    );
+    const tweets = await got<{
+      data: { id: string; text: string }[];
+      includes: { users: { username: string }[] };
+    }>(getTwitterApiTweetsUrl(userId, count), {
+      responseType: "json",
+      headers: {
+        Authorization: `Bearer ${TWITTER_ACCESS_TOKEN}`,
+      },
+    });
     context.res = {
-      body: tweets.body.data,
+      body: {
+        data: tweets.body.data,
+        author: tweets.body.includes.users[0],
+      },
     };
     return;
   } catch (err) {
