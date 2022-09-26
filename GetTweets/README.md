@@ -2,7 +2,20 @@ Azure function documentation: https://learn.microsoft.com/en-us/azure/azure-func
 
 ## Run locally
 
-* Make sure this is installed: npm install -g azure-functions-core-tools
+- Make sure this is installed: npm install -g azure-functions-core-tools
+- configure a .env file in the root of the project with values for:
+
+```
+TWITTER_ACCESS_TOKEN=bearer_token_from_twitter_dashboard
+TWITTER_USER_NAME=some_twitter_handle
+```
+
+and
+
+- in VS Code run with F5
+
+or
+
 - npm i
 - npm start (manually restart on each change)
 - in VS Code, in the Azure toolbar under Workspace > Functions > GetTweets, right click and "execute function now"
@@ -10,12 +23,22 @@ Azure function documentation: https://learn.microsoft.com/en-us/azure/azure-func
 # Deploy
 
 - set envars in Azure Function App console under > configuration > Application settings
-    - Add: TWITTER_ACCESS_TOKEN = bearer token from Twitter developer dashboard
-    - Add: TWITTER_USER_NAME = some twitter handle, without the @
+  - Add: TWITTER_ACCESS_TOKEN = bearer token from Twitter developer dashboard
+  - Add: TWITTER_USER_NAME = some twitter handle, without the @
 - in VS Code, in the Azure toolbar under Workspace > click the "deploy" icon (cloud with up arrow)
 - CORS: in Azure Function App console under > API > CORS
-    - 
-
+  - Request credentials can be turned OFF
+  - Add allowed origins: https://code-star.github.io
+- API Management: in Azure Function App console under > API > API Management
+  - create or use: codestar-website-api-apim
+    - organization name: Codestar
+    - admin email: ...
+    - Pricing tier: Developer
+  - create or use: ?
+    - import functions
+- Slots (stages/test environment): in Azure Function App console under > Deployment > Deployment slots
+  - add a stage: codestar-website-api-test
+  - TODO?
 
 ## Twitter API
 
