@@ -1,14 +1,15 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 import got from "got";
 
-const { TWITTER_ACCESS_TOKEN, TWITTER_USER_NAME } = process.env;
-
 const TWITTER_API_USERS_URL = "https://api.twitter.com/2/users/by/username/";
 
 const getTwitterApiTweetsUrl = (userId: string, count: number) =>
   `https://api.twitter.com/2/users/${userId}/tweets?max_results=${count}&expansions=author_id&tweet.fields=created_at,author_id&user.fields=profile_image_url`;
 
-const getUserId = async (): Promise<string | null> => {
+const getUserId = async (
+  TWITTER_ACCESS_TOKEN: string,
+  TWITTER_USER_NAME: string
+): Promise<string | null> => {
   try {
     const response = await got<{
       data: { id: string; name: string; username: string };
@@ -30,11 +31,12 @@ const httpTrigger: AzureFunction = async function (
   req: HttpRequest
 ): Promise<void> {
   context.log("GetTweets function processed a request.");
+  const { TWITTER_ACCESS_TOKEN, TWITTER_USER_NAME } = process.env;
   const countRaw = Number(req.query.count || 0);
   const count = countRaw > 0 && countRaw < 10 ? countRaw : 5;
 
   try {
-    const userId = await getUserId();
+    const userId = await getUserId(TWITTER_ACCESS_TOKEN, TWITTER_USER_NAME);
     if (!userId) {
       throw Error(`no user id found for ${TWITTER_USER_NAME}`);
     }
