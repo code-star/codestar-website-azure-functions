@@ -1,26 +1,15 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
-
 import got from "got";
-
-interface IMeetupEvent {
-  name: string;
-  time: string;
-  link: string;
-  description: string;
-  featured_photo: string;
-}
-
-type PluckedMeetupEvent = Omit<IMeetupEvent, "description">;
-
-type MeetupEventWithoutPhoto = Omit<IMeetupEvent, "featured_photo">;
-
-type MeetupResponse = Array<IMeetupEvent>;
+import {
+  IMeetupEvent,
+  MeetupResponse,
+  PluckedMeetupEvent,
+} from "./meetup.types";
+import { addEventPhoto } from "./addEventPhoto";
 
 // Meetup API test console: https://secure.meetup.com/meetup_api/console/?path=/:urlname/events
 const GET_PAST_EVENTS_URL =
   "https://api.meetup.com/Codestar-Night/events?&sign=true&photo-host=public&page=20&desc=true&status=past&fields=featured_photo";
-const FALLBACK_IMAGE =
-  "https://res.cloudinary.com/codestar/image/upload/v1532409289/codestar.nl/meetup/codestar-night-logo.jpg";
 
 function pluckEventProperties({
   name,
@@ -34,40 +23,6 @@ function pluckEventProperties({
     link,
     featured_photo,
   };
-}
-
-async function addEventPhoto({
-  featured_photo: featuredPhoto,
-  ...mEventWithoutPhoto
-}: IMeetupEvent) {
-  const resolvedPhoto =
-    featuredPhoto || (await getEventPhoto(mEventWithoutPhoto));
-  return {
-    featured_photo: resolvedPhoto,
-    ...mEventWithoutPhoto,
-  };
-}
-
-async function getEventPhoto(mEventWithoutPhoto: MeetupEventWithoutPhoto) {
-  // Generate a valid file name
-  const cleanName = mEventWithoutPhoto.name.replace(/[^\w]/g, "");
-  const photoUrl = `https://res.cloudinary.com/codestar/image/upload/e_art:fes,c_fill,h_170,w_300/v1533472199/codestar.nl/meetup/${cleanName}`;
-  // Check if Cloudinary image exists
-  try {
-    const imgHead = await got.head(photoUrl, { responseType: "json" });
-    const hasValidLength = parseInt(imgHead.headers["content-length"], 10) > 0;
-    if (hasValidLength) {
-      return {
-        photo_link: photoUrl,
-      };
-    }
-    throw new Error("No image found or parsing failed");
-  } catch (err) {
-    // E.g. 404 because not found
-    return Promise.resolve({
-      photo_link: FALLBACK_IMAGE,
-    });
-  }
 }
 
 const httpTrigger: AzureFunction = async function (
