@@ -1,5 +1,6 @@
-import httpFunction, { IPlaylistResponse } from "./index";
+import { Context } from "@azure/functions";
 import context from "../testing/defaultContext";
+import httpFunction, { IPlaylistResponse } from "./index";
 
 const mockResponse: IPlaylistResponse = {
   items: [
@@ -26,7 +27,7 @@ test("Http trigger should return known text", async () => {
     query: { count: 100 },
   };
 
-  await httpFunction(context as any, request);
+  await httpFunction(context as Context, request);
 
   expect(context.log).toBeCalledTimes(1);
   expect(context.log).toBeCalledWith(
