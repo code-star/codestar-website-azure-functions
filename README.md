@@ -74,3 +74,4 @@ YOUTUBE_PLAYLIST_ID=some_playlist_id
 - Slots (stages/test environment): in Azure Function App console under > Deployment > Deployment slots
   - add a stage: codestar-website-api-test
   - TODO?
+- TODO cache responses on all function endpoints per day to prevent API overruns?
