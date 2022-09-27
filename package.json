@@ -10,6 +10,7 @@
     "test": "echo \"No tests yet...\""
   },
   "dependencies": {
+    "fast-xml-parser": "^4.0.10",
     "got": "^11.8.1"
   },
   "devDependencies": {

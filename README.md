@@ -64,6 +64,7 @@ YOUTUBE_PLAYLIST_ID=some_playlist_id
 
 ## TODO
 
+- Add unit tests
 - API Management: in Azure Function App console under > API > API Management
   - create or use: codestar-website-api-apim
     - organization name: Codestar
