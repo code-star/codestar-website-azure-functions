@@ -1,7 +1,7 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 import got from "got";
 
-interface IPlaylistResponse {
+export interface IPlaylistResponse {
   items: Array<{
     contentDetails: {
       videoId: string;

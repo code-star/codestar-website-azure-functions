@@ -13,5 +13,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/GetYoutubePlaylist/index.js"
+  "scriptFile": "../dist/youtube-playlist/index.js"
 }
