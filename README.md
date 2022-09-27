@@ -57,22 +57,36 @@ YOUTUBE_API_KEY=a_valid_youtube_api_key
 YOUTUBE_PLAYLIST_ID=some_playlist_id
 ```
 
-- in VS Code, in the Azure toolbar under Workspace > click the "deploy" icon (cloud with up arrow), select the correct Resource Group and the codestar-website-api Function App. Allow overwriting the existing deployment.
 - CORS: in Azure Function App console under > API > CORS
   - Request credentials can be turned OFF
   - Add allowed origins: https://code-star.github.io
+- Slots (stages/test environment): in Azure Function App console under > Deployment > Deployment slots
+  - add a stage: codestar-website-api-test
+
+### Deploy to Test Slot:
+
+- in VS Code, in the Azure toolbar under Resources, expand codestar-website-api > Slots > test and right-click. Click "deploy to slot"
+
+### Deploy to Prod Slot:
+
+- in VS Code, in the Azure toolbar under Workspace > click the "deploy" icon (cloud with up arrow), select the correct Resource Group and the codestar-website-api Function App. Allow overwriting the existing deployment.
 
 ## TODO
 
 - Add unit tests
-- API Management: in Azure Function App console under > API > API Management
+- TODO https://github.com/Azure/functions-action
+- TODO API Management: in Azure Function App console under > API > API Management
   - create or use: codestar-website-api-apim
     - organization name: Codestar
     - admin email: ...
     - Pricing tier: Developer
-  - create or use: ?
-    - import functions
-- Slots (stages/test environment): in Azure Function App console under > Deployment > Deployment slots
-  - add a stage: codestar-website-api-test
-  - TODO?
+  - create new:
+    - import functions, click "Link API"
+    - Select all the Azure Functions to add (if nothing is shown, wait at least 1 hour after a new API was created)
+    - Create from Function App: continue with defaults (everything set to codestar-website-api, baseUrl: https://codestar-website-api-apim.azure-api.net/codestar-website-api )
+  - Navigate in Azure Function App console under > API > API Management 
+    - Modify each endpoint to have the "Get" part of the url implicitely. E.g. for the GetPublications operation, click "GET GetPublications" and edit "Frontend". Set URL to "/publications"
+    - On the "Settings" tab, disable "subscription required" 
+    - Test with https://codestar-website-api-apim.azure-api.net/codestar-website-api/publications
 - TODO cache responses on all function endpoints per day to prevent API overruns?
+- TODO add WAF with https://azure.microsoft.com/en-us/products/application-gateway/#features
