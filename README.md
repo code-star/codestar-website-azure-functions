@@ -69,6 +69,11 @@ YOUTUBE_PLAYLIST_ID=some_playlist_id
 
 ### Deploy to Prod Slot:
 
+- in VS Code, in the Azure toolbar under Resources, expand codestar-website-api > Slots > test and right-click. Click "Swap slot..."
+- select the production slot
+
+or:
+
 - in VS Code, in the Azure toolbar under Workspace > click the "deploy" icon (cloud with up arrow), select the correct Resource Group and the codestar-website-api Function App. Allow overwriting the existing deployment.
 
 ## TODO
